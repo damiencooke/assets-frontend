@@ -2,26 +2,26 @@
 
 require('jquery')
 
-var GOVUK = require('stageprompt')
+var govuk = require('./GOVUK_helpers.js')
 
 module.exports = function () {
 // =====================================================
-// Handle the UR panel dismiss link functionality
+// Handle the UR banner dismiss link functionality
 // =====================================================
   var cookieName = 'mdtpurr'
-  var cookieData = GOVUK.getCookie(cookieName)
-  var URbanner = $('#notice-banner')
-  var URbannerShow = 'banner-panel--show'
+  var noticeBanner = $('#notice-banner')
+  var cookieData = govuk.getCookie(cookieName)
+  var noticeBannerShow = 'notice-banner--show'
   var expiryDate = new Date()
 
   if (cookieData == null) {
-    URbanner.addClass(URbannerShow).removeClass('js-hidden')
+    noticeBanner.addClass(noticeBannerShow).removeClass('js-hidden')
   }
 
-  $('.banner-panel__close').on('click', function (e) {
+  $('.notice-banner__close').on('click', function (e) {
     e.preventDefault()
-    expiryDate.setMonth(expiryDate.getMonth() + 1)
-    GOVUK.setCookie(cookieName, 'suppress_for_all_services', 999999999)
-    URbanner.removeClass(URbannerShow).addClass('hidden')
+    var oneMonthInFuture = expiryDate.setMonth(expiryDate.getMonth() + 1)
+    govuk.setCookie(cookieName, 'suppress_for_all_services', oneMonthInFuture)
+    noticeBanner.removeClass(noticeBannerShow).addClass('hidden')
   })
 }
