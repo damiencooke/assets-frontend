@@ -122,15 +122,14 @@ module.exports = {
       src + 'scss/**/*.scss',
       src + 'components/**/*.scss'
     ],
-    govukSrc: govuk.template + '/public/sass/**/*.scss',
-    govukElementsSrc: govuk.elements + '/public/sass/**/*.scss',
     dev: {
       dest: snapshotDir + 'stylesheets/',
       settings: {
         sourceComments: true,
         includePaths: [
           src,
-          govuk.template + '/public/sass'
+          'node_modules/govuk-elements-sass/public/sass',
+          'node_modules/govuk_frontend_toolkit/stylesheets'
         ],
         outputStyle: 'expanded'
       },
@@ -141,7 +140,8 @@ module.exports = {
       settings: {
         includePaths: [
           src,
-          govuk.template + '/public/sass'
+          'node_modules/govuk-elements-sass/public/sass',
+          'node_modules/govuk_frontend_toolkit/stylesheets'
         ],
         outputStyle: 'compressed'
       }
