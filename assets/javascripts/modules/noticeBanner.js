@@ -22,6 +22,6 @@ module.exports = function () {
     e.preventDefault()
     var oneMonthInFuture = expiryDate.setMonth(expiryDate.getMonth() + 1)
     govuk.setCookie(cookieName, 'suppress_for_all_services', oneMonthInFuture)
-    noticeBanner.removeClass(noticeBannerShow).addClass('hidden')
+    noticeBanner.removeClass(noticeBannerShow).addClass('js-hidden')
   })
 }

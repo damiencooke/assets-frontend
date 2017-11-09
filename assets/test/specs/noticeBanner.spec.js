@@ -6,51 +6,77 @@ require('jquery')
 var govuk = require('../../javascripts/modules/GOVUK_helpers.js')
 
 describe('Given I have a notice banner on the page', function () {
-  var noticeBanner
+  var $jsHiddenClass = 'js-hidden'
+  var fixtureFile = 'notice-banner-fixture.html'
+  var cookieDataValue = 'suppress_for_all_services'
   var cookieName = 'mdtpurr'
+  var noticeBannerJavascript
   var $cookieData
   var $noticeBanner
-  var hidden = 'js-hidden'
-  var fixtureFile = 'notice-banner-fixture.html'
   var $closeBannerLink
 
   beforeEach(function () {
     jasmine.getFixtures().fixturesPath = 'base/test/specs/fixtures/'
     loadFixtures(fixtureFile)
 
-    noticeBanner = require('../../javascripts/modules/noticeBanner.js')
+    noticeBannerJavascript = require('../../javascripts/modules/noticeBanner.js')
   })
 
-  describe('loading the page without cookie set', function () {
+  afterEach(function () {
+    $cookieData = govuk.setCookie(cookieName, '', -1)
+  })
+
+  describe('loading the page with cookie set and not clicking the close link', function () {
     beforeEach(function () {
       loadFixtures(fixtureFile)
-      noticeBanner()
+      $noticeBanner = $('#notice-banner')
+      govuk.setCookie(cookieName, cookieDataValue, 999)
       $cookieData = govuk.getCookie(cookieName)
-      $closeBannerLink = $('.notice-banner__close').click()
-      $noticeBanner = $('#notice-banner')
+      noticeBannerJavascript()
     })
 
-    it('notice banner should be visible', function () {
-      expect($noticeBanner).not.toHaveClass(hidden)
+    it('the cookie should have a value', function () {
+      expect($cookieData).toBe(cookieDataValue)
     })
 
-    it('notice banner should close when link is clicked', function () {
-      expect($closeBannerLink)
-      expect($noticeBanner).toHaveClass(hidden)
+    it('the banner should not be visible', function () {
+      expect($noticeBanner).toHaveClass($jsHiddenClass)
     })
   })
 
-  describe('loading the page with cookie set', function () {
+  describe('loading the page without the cookie set and not clicking the close link', function () {
     beforeEach(function () {
       loadFixtures(fixtureFile)
-      $cookieData = govuk.setCookie(cookieName, 'suppress_for_all_services', 1)
-      noticeBanner()
+      noticeBannerJavascript()
       $noticeBanner = $('#notice-banner')
     })
 
-    it('notice banner should not be visible when a cookie is set', function () {
-      expect($cookieData).not.toBeNull()
-      expect($noticeBanner).toHaveClass(hidden)
+    it('the cookie should be null', function () {
+      $cookieData = govuk.getCookie(cookieName)
+      expect($cookieData).toBe(null)
+    })
+
+    it('the banner should be visible', function () {
+      expect($noticeBanner).not.toHaveClass($jsHiddenClass)
+    })
+  })
+
+  describe('loading the page without a cookie and clicking the close link', function () {
+    beforeEach(function () {
+      loadFixtures(fixtureFile)
+      noticeBannerJavascript()
+      $closeBannerLink = $('.notice-banner__close')
+      $closeBannerLink.click()
+      $noticeBanner = $('#notice-banner')
+    })
+
+    it('the cookie data should have the value surpress_for_all_services', function () {
+      $cookieData = govuk.getCookie(cookieName)
+      expect($cookieData).toBe(cookieDataValue)
+    })
+
+    it('the banner should not be visible', function () {
+      expect($noticeBanner).toHaveClass($jsHiddenClass)
     })
   })
 })
